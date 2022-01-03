@@ -295,40 +295,31 @@ class Inflate {
 
   List<int> _decode(int num, HuffmanTable table, List<int> lengths) {
     var prev = 0;
-    var i = 0;
-    while (i < num) {
-      final code = _readCodeByTable(table);
+
+    for (int i = 0; i < num;) {
+      int code = _readCodeByTable(table);
       switch (code) {
         case 16:
-          // Repeat last code
-          var repeat = 3 + _readBits(2);
-          while (repeat-- > 0) {
-            if (i < lengths.length) {
-              lengths[i++] = prev;
-            }
+          int repeat = 3 + _readBits(2);
+          while ((repeat--) > 0) {
+            lengths[i++] = prev;
           }
           break;
         case 17:
-          // Repeat 0
-          var repeat = 3 + _readBits(3);
-          while (repeat-- > 0) {
+          int repeat = 3 + _readBits(3);
+          while ((repeat--) > 0) {
             lengths[i++] = 0;
           }
           prev = 0;
           break;
         case 18:
-          // Repeat lots of 0s.
-          var repeat = 11 + _readBits(7);
-          while (repeat-- > 0) {
+          int repeat = 11 + _readBits(7);
+          while ((repeat--) > 0) {
             lengths[i++] = 0;
           }
           prev = 0;
           break;
-        default: // [0, 15]
-          // Literal bitlength for this code.
-          if (code < 0 || code > 15) {
-            throw ArchiveException('Invalid Huffman Code: $code');
-          }
+        default:
           lengths[i++] = code;
           prev = code;
           break;
