@@ -303,7 +303,9 @@ class Inflate {
           // Repeat last code
           var repeat = 3 + _readBits(2);
           while (repeat-- > 0) {
-            lengths[i++] = prev;
+            if (i < lengths.length) {
+              lengths[i++] = prev;
+            }
           }
           break;
         case 17:
